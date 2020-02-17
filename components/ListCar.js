@@ -6,18 +6,19 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { SearchBar } from 'react-native-elements';
-export default class ListFault extends Component {
+
+export default class ListCar extends Component {
     constructor(props) {
         super(props);
         this.state = {
             search: "",
-            tableHead: ['Ngày', 'Giờ', 'Biển số', ''],
+            tableHead: ['Biển số', 'Tên xe', 'Màu', 'Chủ',''],
             tableData: []
         }
     }
     updateSearch = search => {
         this.setState({ search });
-        const url = "http://apismarttraffic.servehttp.com/fails/" + search;
+        const url = "http://apismarttraffic.servehttp.com/cars/" + search;
         fetch(url, {
             method: 'GET',
             headers: {
@@ -27,16 +28,13 @@ export default class ListFault extends Component {
         }).then(response => response.json())
             .then((responseJson) => {
                 this.setState({
-                    tableData: responseJson.data
+                    tableData: responseJson
                 })
             })
             .catch(error => console.log(error))
     };
-    _alertIndex(index) {
-        Alert.alert(`This is row ${index + 1}`);
-    }
     componentDidMount() {
-        fetch("http://apismarttraffic.servehttp.com/fails", {
+        fetch("http://apismarttraffic.servehttp.com/cars", {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -46,10 +44,14 @@ export default class ListFault extends Component {
             .then(response => response.json())
             .then((responseJson) => {
                 this.setState({
-                    tableData: responseJson.data
+                    tableData: responseJson
                 })
             })
-            .catch(error => console.log(error)) //to catch the errors if any
+            .catch(error => console.log(error))
+    }
+
+    _alertIndex(index) {
+        Alert.alert(`This is row ${index + 1}`);
     }
 
     render() {
@@ -62,16 +64,16 @@ export default class ListFault extends Component {
                 <TouchableOpacity style={styles.detailBtn}>
                     <Ionicons name={'ios-information-circle'} size={26} color={'rgba(0,0,0,0.7)'} />
                 </TouchableOpacity>
-
             </View>
         );
         const table = [];
         for (var i in state.tableData) {
             row = (
                 <TableWrapper key={i} style={styles.row}>
-                    <Cell data={state.tableData[i].date} textStyle={styles.text} />
-                    <Cell data={state.tableData[i].time} textStyle={styles.text} />
                     <Cell data={state.tableData[i].Plate} textStyle={styles.text} />
+                    <Cell data={state.tableData[i].name} textStyle={styles.text} />
+                    <Cell data={state.tableData[i].color} textStyle={styles.text} />
+                    <Cell data={state.tableData[i].manaUsername} textStyle={styles.text} />
                     <Cell data={listBtn} />
                 </TableWrapper>);
             table.push(row);
@@ -100,7 +102,12 @@ const styles = StyleSheet.create({
     row: { flexDirection: 'row', backgroundColor: '#FFF1C1' },
     btn: { width: 58, height: 18, backgroundColor: '#78B7BB', borderRadius: 2 },
     btnText: { textAlign: 'center', color: '#fff' },
+    lockBtn: {
+        position: 'relative',
+        top: 4,
+    },
     deleteBtn: { position: 'relative', top: 4 },
     detailBtn: { position: 'relative', top: 4 },
     btnContainer: { flex: 1, flexDirection: 'row' }
+
 });

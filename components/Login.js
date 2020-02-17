@@ -29,10 +29,9 @@ export default class Login extends Component {
         }
     }
     navigate = (page) => {
-        this.props.navigation.navigate(page);
+        this.props.navigation.navigate(page, { username: this.state.username });
     }
     login = () => {
-        // const navigation = this.props.navigation;
         fetch('http://apismarttraffic.servehttp.com/users/login', {
             method: 'POST',
             headers: {
@@ -46,7 +45,7 @@ export default class Login extends Component {
         }).then(response => response.json())
             .then((resJson) => {
                 if (resJson.success) {
-                    resJson.role == 1 ? this.navigate('Admin') : this.navigate('User');
+                    resJson.role == 0 ? this.navigate('Admin') : this.navigate('User');
                     console.log(resJson.role, "abc")
                 } else {
                     alert('Login fail.Try again!');

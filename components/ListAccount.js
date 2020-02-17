@@ -18,6 +18,20 @@ export default class ListAccount extends Component {
     }
     updateSearch = search => {
         this.setState({ search });
+        const url = "http://apismarttraffic.servehttp.com/users/" + search;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then(response => response.json())
+            .then((responseJson) => {
+                this.setState({
+                    tableData: responseJson
+                })
+            })
+            .catch(error => console.log(error))
     };
     componentDidMount() {
         fetch("http://apismarttraffic.servehttp.com/users", {
@@ -33,7 +47,7 @@ export default class ListAccount extends Component {
                     tableData: responseJson
                 })
             })
-            .catch(error => console.log(error)) //to catch the errors if any
+            .catch(error => console.log(error))
     }
 
     _alertIndex(index) {
