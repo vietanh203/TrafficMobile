@@ -99,7 +99,7 @@ export default class ListAccount extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
+    container: { flex: 1, padding: 0, paddingTop: 30, backgroundColor: '#fff' },
     head: { height: 40, backgroundColor: '#808B97' },
     text: { margin: 6 },
     row: { flexDirection: 'row', backgroundColor: '#FFF1C1' },

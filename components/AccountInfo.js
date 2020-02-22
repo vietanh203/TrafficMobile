@@ -75,11 +75,10 @@ export default class AccountInfo extends Component {
 
     }
     render() {
-        // console.log(this.state.user);
         return (
             <ImageBackground source={bgImg} style={styles.bgContainer}>
                 <View style={styles.logoContainer}>
-                    <Text style={styles.logoText}>ACCOUNT INFOMATION</Text>
+                    <Text style={styles.logoText}>THÔNG TIN TÀI KHOẢN</Text>
                 </View>
                 <View style={styles.inputContainer}>
                     <Ionicons name={'ios-person'} size={28}
@@ -88,16 +87,17 @@ export default class AccountInfo extends Component {
                         style={styles.textInput}
                         value={this.state.user.name}
                         underlineColorAndroid='transparent'
-                        onChangeText={(name) => this.setState(currentState => ({ user: {...currentState.user, name } }))}
+                        onChangeText={(name) => this.setState(currentState => ({ user: { ...currentState.user, name } }))}
                     />
-                </View><View style={styles.inputContainer}>
+                </View>
+                <View style={styles.inputContainer}>
                     <Ionicons name={'ios-card'} size={28}
                         color={'rgba(255,255,255,0.7)'} style={styles.inputIcon} />
                     <TextInput
                         style={styles.textInput}
                         value={this.state.user.CMND}
                         underlineColorAndroid='transparent'
-                        onChangeText={(CMND) => currentState => ({ user: {...currentState.user, CMND } })}
+                        onChangeText={(CMND) => currentState => ({ user: { ...currentState.user, CMND } })}
                     />
                 </View>
                 <View style={styles.inputContainer}>
@@ -107,7 +107,7 @@ export default class AccountInfo extends Component {
                         style={styles.textInput}
                         value={this.state.user.SDT}
                         underlineColorAndroid='transparent'
-                        onChangeText={(SDT) => currentState => ({ user: {...currentState.user, SDT } })}
+                        onChangeText={(SDT) => currentState => ({ user: { ...currentState.user, SDT } })}
                     />
                 </View>
                 <View style={styles.inputContainer}>
@@ -119,7 +119,7 @@ export default class AccountInfo extends Component {
                         secureTextEntry={this.state.showPass}
                         placeholderTextColor={'rgba(255,255,255,0.7)'}
                         underlineColorAndroid='transparent'
-                        onChangeText={(password) => currentState => ({ user: {...currentState.user, password } })}
+                        onChangeText={(password) => currentState => ({ user: { ...currentState.user, password } })}
 
                     />
                     <TouchableOpacity style={styles.eyeBtn}
