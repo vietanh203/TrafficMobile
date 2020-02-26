@@ -7,14 +7,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { SearchBar } from 'react-native-elements';
 import { TextInput } from 'react-native-gesture-handler';
-const { width: WIDTH } = Dimensions.get('window')
 
+const { width: WIDTH } = Dimensions.get('window')
 export default class ListCar extends Component {
     constructor(props) {
         super(props);
         this.state = {
             search: "",
-            tableHead: ['Biển số', 'Tên xe', 'Màu', 'Chủ', ''],
+            tableHead: ['Biển số', 'Tên xe', 'Màu', 'Chủ xe', ''],
             tableData: [],
             car: {
                 Plate: "",
@@ -94,8 +94,8 @@ export default class ListCar extends Component {
         for (var i in state.tableData) {
             row = (
                 <TableWrapper key={i} style={styles.row}>
-                    <Cell data={state.tableData[i].Plate} textStyle={styles.text} />
-                    <Cell data={state.tableData[i].name} textStyle={styles.text} />
+                    <Cell data={state.tableData[i].Plate} textStyle={{ width: 85, color: 'red', fontSize: 13 }} />
+                    <Cell data={state.tableData[i].name} textStyle={{ width: 85, paddingLeft: 1 }} />
                     <Cell data={state.tableData[i].color} textStyle={styles.text} />
                     <Cell data={state.tableData[i].manaUsername} textStyle={styles.text} />
                     <Cell data={listBtn} />
@@ -106,11 +106,11 @@ export default class ListCar extends Component {
         return (
             <View style={styles.container}>
                 <SearchBar
-                    placeholder="Type Here..."
+                    placeholder="Nhập biển số hoặc chủ xe"
                     onChangeText={this.updateSearch}
                     value={this.state.search}
                 />
-                <Table borderStyle={{ borderColor: 'transparent' }}>
+                <Table borderStyle={{ borderWidth: 1, borderColor: 'white' }} >
                     <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
                     {table}
                 </Table>
@@ -194,10 +194,10 @@ export default class ListCar extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 0, paddingTop: 30, backgroundColor: '#fff' },
+    container: { flex: 1, padding: 0, paddingTop: 40, backgroundColor: '#fff' },
     head: { height: 40, backgroundColor: '#808B97' },
-    text: { margin: 6 },
-    row: { flexDirection: 'row', backgroundColor: '#FFF1C1' },
+    text: { margin: 0, textAlign: 'center' },
+    row: { flexDirection: 'row', backgroundColor: '#FFF1C1', height: 35 },
     btn: { width: 58, height: 18, backgroundColor: '#78B7BB', borderRadius: 2 },
     btnText: { textAlign: 'center', color: '#fff' },
     lockBtn: {

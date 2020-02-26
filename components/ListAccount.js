@@ -89,7 +89,7 @@ export default class ListAccount extends Component {
                     onChangeText={this.updateSearch}
                     value={this.state.search}
                 />
-                <Table borderStyle={{ borderColor: 'transparent' }}>
+                <Table borderStyle={{ borderWidth: 1, borderColor: 'white' }}>
                     <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
                     {table}
                 </Table>
@@ -99,9 +99,9 @@ export default class ListAccount extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 0, paddingTop: 30, backgroundColor: '#fff' },
+    container: { flex: 1, padding: 0, paddingTop: 40, backgroundColor: '#fff' },
     head: { height: 40, backgroundColor: '#808B97' },
-    text: { margin: 6 },
+    text: { margin: 4 },
     row: { flexDirection: 'row', backgroundColor: '#FFF1C1' },
     btn: { width: 58, height: 18, backgroundColor: '#78B7BB', borderRadius: 2 },
     btnText: { textAlign: 'center', color: '#fff' },

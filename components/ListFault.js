@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import {
     StyleSheet, Text, Modal, TouchableHighlight,
-    Image, View, TouchableOpacity, Alert
+    Image, View, TouchableOpacity, Alert, Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import DatePicker from 'react-native-date-ranges';
+import { PieChart } from 'react-native-chart-kit';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { SearchBar } from 'react-native-elements';
+import { Button } from 'react-native-paper';
 const unixTS = require('unix-timestamp');
+const { width: WIDTH } = Dimensions.get('window')
+
 export default class ListFault extends Component {
     constructor(props) {
         super(props);
@@ -17,16 +22,24 @@ export default class ListFault extends Component {
             modalVisible: false,
         }
     }
+
     toggleModal(visible) {
         this.setState({ modalVisible: visible });
     }
     getImage = obj => {
         let unixStr = obj.date + " " + obj.time;
         let unixTime = unixTS.fromDate(unixStr);
-        console.log(`http://apismarttraffic.servehttp.com/img/${obj.Plate}_${unixTime}.jpg`)
         return (`http://apismarttraffic.servehttp.com/img/${obj.Plate}_${unixTime}.jpg`)
-
     }
+    setDates = value => {
+        const dataFilter = []
+        for (var i in this.state.tableData) {
+            if (value.startDate < this.state.tableData[i].date && this.state.tableData[i].date < value.endDate) {
+                dataFilter.push(this.state.tableData[i]);
+            }
+        }
+        this.setState({ tableData: dataFilter });
+    };
     getFaultByType = type => {
         switch (type) {
             case 0:
@@ -80,8 +93,32 @@ export default class ListFault extends Component {
             .catch(error => console.log(error)) //to catch the errors if any
     }
 
+
     render() {
         const state = this.state;
+
+        const data = [
+            {
+                name: "Không đội mũ",
+                population: 4,
+                color: "#f6c23e",
+                legendFontColor: "#7F7F7F",
+                legendFontSize: 15
+            },
+            {
+                name: "Vượt đèn đỏ",
+                population: 4,
+                color: "#36b9cc",
+                legendFontColor: "#7F7F7F",
+                legendFontSize: 15
+            },
+            {
+                name: "Vi phạm 2 lỗi",
+                population: 1,
+                color: "red",
+                legendFontColor: "#7F7F7F",
+                legendFontSize: 15
+            }];
         const listBtn = (obj) =>
             (
                 <View style={styles.btnContainer}>
@@ -102,6 +139,9 @@ export default class ListFault extends Component {
                                     source={{ uri: this.getImage(obj) }}
                                 />
                                 <Text style={styles.text}>Lỗi vị phạm : {this.getFaultByType(obj.type)}</Text>
+                                <Text>Thời gian: {obj.date} - {obj.time}</Text>
+                                <Text>Tên :{obj.user[0].name}</Text>
+                                <Text>CMND:{obj.user[0].CMND}</Text>
                                 <TouchableHighlight style={styles.touchableButton}
                                     onPress={() => { this.toggleModal(!this.state.modalVisible) }}>
                                     <Text style={styles.btnText}>Đóng</Text>
@@ -114,12 +154,12 @@ export default class ListFault extends Component {
         const table = [];
         for (var i in state.tableData) {
             row = (
-                <TableWrapper key={i} style={styles.row}>
-                    <Cell data={state.tableData[i].date} textStyle={styles.text} />
-                    <Cell data={state.tableData[i].time} textStyle={styles.text} />
-                    <Cell data={state.tableData[i].Plate} textStyle={styles.text} />
-                    <Cell data={state.tableData[i].user[0].username} textStyle={styles.text} />
-                    <Cell data={listBtn(state.tableData[i])} />
+                <TableWrapper key={i} style={styles.row} >
+                    <Cell data={state.tableData[i].date} textStyle={{ width: 130, fontSize: 13 }} />
+                    <Cell data={state.tableData[i].time} textStyle={{ width: 65, paddingLeft: 4 }} />
+                    <Cell data={state.tableData[i].Plate} textStyle={{ color: 'red', width: 130, fontSize: 13 }} />
+                    <Cell data={state.tableData[i].user[0].username} textStyle={{ width: 45, paddingLeft: 8 }} />
+                    <Cell data={listBtn(state.tableData[i])} textStyle={{ width: 15 }} />
                 </TableWrapper>);
             table.push(row);
         }
@@ -127,24 +167,65 @@ export default class ListFault extends Component {
         return (
             <View style={styles.container}>
                 <SearchBar
-                    placeholder="Type Here..."
+                    placeholder="Tìm biển số hoặc chủ xe"
                     onChangeText={this.updateSearch}
                     value={this.state.search}
                 />
-                <Table borderStyle={{ borderColor: 'transparent' }}>
+                <DatePicker
+                    style={{ width: WIDTH, height: 35 }}
+                    customStyles={{
+                        placeholderText: { fontSize: 20 }, // placeHolder style
+                    }} // optional 
+                    returnFormat={'YYYY/MM/DD'}
+                    outFormat={'YYYY/MM/DD'}
+                    ButtonText={'OK'}
+                    markText={'Chọn ngày'}
+                    centerAlign // optional text will align center or not
+                    allowFontScaling={false} // optional
+                    placeholder={'Tìm lỗi theo ngày'}
+                    mode={'range'}
+                    onConfirm={value => this.setDates(value)}
+                />
+                <Table borderStyle={{ borderWidth: 1, borderColor: 'white' }}
+                    widthArr={[130, 65, 130, 45, 15]}>
                     <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
                     {table}
                 </Table>
-            </View>
+                <Text style={{ textAlign: 'center', marginTop: 10 }}>THỐNG KÊ</Text>
+                <PieChart
+                    data={data}
+                    width={WIDTH}
+                    height={100}
+                    chartConfig={{
+                        backgroundColor: "#e26a00",
+                        backgroundGradientFrom: "#fb8c00",
+                        backgroundGradientTo: "#ffa726",
+                        decimalPlaces: 2, // optional, defaults to 2dp
+                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        style: {
+                            borderRadius: 10
+                        },
+                        propsForDots: {
+                            r: "10",
+                            strokeWidth: "2",
+                            stroke: "#ffa726"
+                        }
+                    }}
+                    accessor="population"
+                    backgroundColor="transparent"
+                    absolute
+                />
+            </View >
         )
     }
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 0, paddingTop: 30, backgroundColor: '#fff' },
-    head: { height: 55, backgroundColor: '#808B97' },
-    text: { margin: 5 },
-    row: { flexDirection: 'row', backgroundColor: '#FFF1C1' },
+    container: { flex: 1, padding: 0, paddingTop: 40, backgroundColor: '#fff', height: 35 },
+    head: { height: 30, backgroundColor: '#808B97' },
+    text: { margin: 0, textAlign: 'center' },
+    row: { flexDirection: 'row', backgroundColor: '#FFF1C1', height: 30 },
     btn: { marginTop: 4, width: 58, height: 18, backgroundColor: '#78B7BB', borderRadius: 2 },
     btnText: { textAlign: 'center', color: '#fff' },
     deleteBtn: { position: 'relative', top: 4 },

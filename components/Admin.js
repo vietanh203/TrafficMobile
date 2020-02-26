@@ -20,11 +20,11 @@ export default function Admin(props) {
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
-                        if (route.name === 'Faults') {
+                        if (route.name === 'Vi phạm') {
                             iconName = focused ? 'ios-information-circle' : 'ios-information-circle-outline';
-                        } else if (route.name === 'Accounts') {
+                        } else if (route.name === 'Tài khoản') {
                             iconName = focused ? 'ios-list-box' : 'ios-list';
-                        } else if (route.name === 'Cars') {
+                        } else if (route.name === 'Phương tiện') {
                             iconName = focused ? 'ios-car' : 'ios-car';
                         } else if (route.name === state.params.username) {
                             iconName = focused ? 'ios-person' : 'ios-person';
@@ -38,9 +38,9 @@ export default function Admin(props) {
                     activeTintColor: 'tomato',
                     inactiveTintColor: 'gray',
                 }}>
-                <Tab.Screen name="Faults" component={ListFault} />
-                <Tab.Screen name="Cars" component={ListCar} />
-                <Tab.Screen name="Accounts" component={ListAccount} />
+                <Tab.Screen name="Vi phạm" component={ListFault} />
+                <Tab.Screen name="Phương tiện" component={ListCar} />
+                <Tab.Screen name="Tài khoản" component={ListAccount} />
                 <Tab.Screen name={state.params.username} component={AccountInfo}/>
 
             </Tab.Navigator>

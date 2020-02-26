@@ -90,7 +90,7 @@ export default class Login extends Component {
                 </View>
                 <TouchableOpacity style={styles.loginBtn}
                     onPress={this.login.bind(this)}>
-                    <Text style={styles.loginText}>Login</Text>
+                    <Text style={styles.loginText}>Đăng nhập</Text>
                 </TouchableOpacity>
             </ImageBackground>
         );
