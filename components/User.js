@@ -3,9 +3,9 @@ import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import ListFault from './ListFault';
+import MyFaults from './MyFaults';
 import AccountInfo from './AccountInfo';
-import ListCar from './ListCar';
+import MyCar from './MyCar';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,15 +18,14 @@ export default function User(props) {
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
-                        if (route.name === 'Faults') {
+                        if (route.name === 'Lỗi vi phạm') {
                             iconName = focused ? 'ios-information-circle' : 'ios-information-circle-outline';
-                        } else if (route.name === 'Cars') {
+                        } else if (route.name === 'Phương tiện') {
                             iconName = focused ? 'ios-car' : 'ios-car';
                         }
                         else if (route.name === state.params.username) {
                             iconName = focused ? 'ios-person' : 'ios-person';
                         }
-
                         // You can return any component that you like here!
                         return <Ionicons name={iconName} size={size} color={color} />;
                     },
@@ -35,8 +34,8 @@ export default function User(props) {
                     activeTintColor: 'tomato',
                     inactiveTintColor: 'gray',
                 }}>
-                <Tab.Screen name="Faults" component={ListFault} />
-                <Tab.Screen name="Cars" component={ListCar} />
+                <Tab.Screen name="Lỗi vi phạm" component={MyFaults} />
+                <Tab.Screen name="Phương tiện" component={MyCar} />
                 <Tab.Screen name={state.params.username} component={AccountInfo} />
 
             </Tab.Navigator>

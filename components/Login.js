@@ -9,9 +9,10 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import bgImg from '../assets/bg.jpeg';
 import logo from '../assets/logo.png';
-
+import AppProvider from './Context';
 const { width: WIDTH } = Dimensions.get('window')
-export default class Login extends Component {
+
+class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -46,9 +47,9 @@ export default class Login extends Component {
             .then((resJson) => {
                 if (resJson.success) {
                     resJson.role == 0 ? this.navigate('Admin') : this.navigate('User');
-                    console.log(resJson.role, "abc")
+                    this.props.onChange(resJson.plate);
                 } else {
-                    alert('Login fail.Try again!');
+                    alert('Vui lòng thử lại!');
                 }
             })
     }
@@ -157,3 +158,10 @@ const styles = StyleSheet.create({
         textAlign: "center"
     }
 });
+
+const WrapperContext = (props) => {
+    return (<AppProvider.Consumer>
+        {context => { return <Login {...props} {...context}></Login> }}
+    </AppProvider.Consumer>)
+}
+export default WrapperContext;
