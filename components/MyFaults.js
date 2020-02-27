@@ -34,6 +34,7 @@ class MyFaults extends Component {
     getImage = obj => {
         let unixStr = obj.date + " " + obj.time;
         let unixTime = unixTS.fromDate(unixStr);
+        // console.log(`http://apismarttraffic.servehttp.com/img/${obj.Plate}_${unixTime}.jpg`);
         return (`http://apismarttraffic.servehttp.com/img/${obj.Plate}_${unixTime}.jpg`)
     }
     setDates = value => {
@@ -100,28 +101,6 @@ class MyFaults extends Component {
     render() {
         const state = this.state;
         console.log(state.tableData);
-        const data = [
-            {
-                name: "Không đội mũ",
-                population: 4,
-                color: "#f6c23e",
-                legendFontColor: "#7F7F7F",
-                legendFontSize: 15
-            },
-            {
-                name: "Vượt đèn đỏ",
-                population: 4,
-                color: "#36b9cc",
-                legendFontColor: "#7F7F7F",
-                legendFontSize: 15
-            },
-            {
-                name: "Vi phạm 2 lỗi",
-                population: 1,
-                color: "red",
-                legendFontColor: "#7F7F7F",
-                legendFontSize: 15
-            }];
         const listBtn = (obj) =>
             (
                 <View style={styles.btnContainer}>
@@ -194,31 +173,6 @@ class MyFaults extends Component {
                     <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
                     {table}
                 </Table>
-                <Text style={{ textAlign: 'center', marginTop: 10 }}>THỐNG KÊ</Text>
-                <PieChart
-                    data={data}
-                    width={WIDTH}
-                    height={100}
-                    chartConfig={{
-                        backgroundColor: "#e26a00",
-                        backgroundGradientFrom: "#fb8c00",
-                        backgroundGradientTo: "#ffa726",
-                        decimalPlaces: 2, // optional, defaults to 2dp
-                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                        style: {
-                            borderRadius: 10
-                        },
-                        propsForDots: {
-                            r: "10",
-                            strokeWidth: "2",
-                            stroke: "#ffa726"
-                        }
-                    }}
-                    accessor="population"
-                    backgroundColor="transparent"
-                    absolute
-                />
             </View >
         )
 

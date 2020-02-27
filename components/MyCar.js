@@ -7,9 +7,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { SearchBar } from 'react-native-elements';
 import { TextInput } from 'react-native-gesture-handler';
-
+import AppProvider from'./Context';
 const { width: WIDTH } = Dimensions.get('window')
-export default class MyCar extends Component {
+class MyCar extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -58,20 +58,23 @@ export default class MyCar extends Component {
             .catch(error => console.log(error))
     }
     componentDidMount() {
-        fetch("http://apismarttraffic.servehttp.com/cars", {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => response.json())
-            .then((responseJson) => {
-                this.setState({
-                    tableData: responseJson
-                })
+        var data = [];
+        const plates = this.props.plate;
+        for (var i in plates) {
+            fetch(`http://apismarttraffic.servehttp.com/cars/${plates[i]}`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                }
             })
-            .catch(error => console.log(error))
+                .then(response => response.json())
+                .then((responseJson) => {
+                    data = data.concat(responseJson);
+                    this.setState({ tableData: data });
+                })
+                .catch(error => console.log(error)) //to catch the errors if any
+        }
     }
 
     _alertIndex(index) {
@@ -80,6 +83,7 @@ export default class MyCar extends Component {
 
     render() {
         const state = this.state;
+        console.log(state.tableData);
         const listBtn = (
             <View style={styles.btnContainer}>
                 <TouchableOpacity style={styles.deleteBtn}>
@@ -94,10 +98,10 @@ export default class MyCar extends Component {
         for (var i in state.tableData) {
             row = (
                 <TableWrapper key={i} style={styles.row}>
-                    <Cell data={state.tableData[i].Plate} textStyle={{ width: 85, color: 'red', fontSize: 13 }} />
-                    <Cell data={state.tableData[i].name} textStyle={{ width: 85, paddingLeft: 1 }} />
-                    <Cell data={state.tableData[i].color} textStyle={styles.text} />
-                    <Cell data={state.tableData[i].manaUsername} textStyle={styles.text} />
+                    <Cell data={state.tableData[i].car.Plate} textStyle={{ width: 85, color: 'red', fontSize: 13 }} />
+                    <Cell data={state.tableData[i].car.name} textStyle={{ width: 85, paddingLeft: 1 }} />
+                    <Cell data={state.tableData[i].car.color} textStyle={styles.text} />
+                    <Cell data={state.tableData[i].user.name} textStyle={styles.text} />
                     <Cell data={listBtn} />
                 </TableWrapper>);
             table.push(row);
@@ -251,3 +255,9 @@ const styles = StyleSheet.create({
     }
 
 });
+const WrapperContext = (props) => {
+    return (<AppProvider.Consumer>
+        {context => { return <MyCar {...props} {...context}></MyCar> }}
+    </AppProvider.Consumer>)
+}
+export default WrapperContext;
