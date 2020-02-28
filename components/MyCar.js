@@ -110,7 +110,7 @@ class MyCar extends Component {
         return (
             <View style={styles.container}>
                 <SearchBar
-                    placeholder="Nhập biển số hoặc chủ xe"
+                    placeholder="Nhập biển số xe"
                     onChangeText={this.updateSearch}
                     value={this.state.search}
                 />

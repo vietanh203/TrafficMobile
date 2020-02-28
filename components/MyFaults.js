@@ -63,21 +63,16 @@ class MyFaults extends Component {
         }
     }
     updateSearch = search => {
-        this.setState({ search });
-        const url = "http://apismarttraffic.servehttp.com/fails/" + search;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
+        const searchData = [];
+        if (search != null) {
+            this.setState({ search });
+            for (var i in this.state.tableData) {
+                if (this.state.tableData[i].Plate == search) {
+                    searchData.push(this.state.tableData[i]);
+                }
             }
-        }).then(response => response.json())
-            .then((responseJson) => {
-                this.setState({
-                    tableData: responseJson.data
-                })
-            })
-            .catch(error => console.log(error))
+            this.setState({ tableData: searchData });
+        }
     };
     componentDidMount() {
         var data = [];
@@ -149,7 +144,7 @@ class MyFaults extends Component {
         return (
             <View style={styles.container}>
                 <SearchBar
-                    placeholder="Tìm biển số hoặc chủ xe"
+                    placeholder="Tìm biển số xe"
                     onChangeText={this.updateSearch}
                     value={this.state.search}
                 />
