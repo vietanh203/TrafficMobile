@@ -19,6 +19,7 @@ class MyFaults extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: true,
             search: "",
             tableHead: ['Ngày', 'Giờ', 'Biển số', 'Chủ xe', ''],
             tableData: [],
@@ -88,14 +89,16 @@ class MyFaults extends Component {
                 .then(response => response.json())
                 .then((responseJson) => {
                     data = data.concat(responseJson.data);
-                    this.setState({ tableData: data });
+                    this.setState({ tableData: data, isLoading: false });
                 })
                 .catch(error => console.log(error)) //to catch the errors if any
         }
     }
+
     render() {
         const state = this.state;
-        console.log(state.tableData);
+        const isLoading = this.state.isLoading;
+        console.log(isLoading);
         const listBtn = (obj) =>
             (
                 <View style={styles.btnContainer}>
@@ -140,7 +143,6 @@ class MyFaults extends Component {
                 </TableWrapper>);
             table.push(row);
         }
-
         return (
             <View style={styles.container}>
                 <SearchBar
@@ -170,9 +172,10 @@ class MyFaults extends Component {
                 </Table>
             </View >
         )
-
     }
 }
+
+
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 0, paddingTop: 40, backgroundColor: '#fff', height: 35 },

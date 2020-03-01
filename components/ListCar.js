@@ -83,10 +83,10 @@ export default class ListCar extends Component {
         const listBtn = (
             <View style={styles.btnContainer}>
                 <TouchableOpacity style={styles.deleteBtn}>
-                    <Ionicons name={'ios-close-circle'} size={26} color={'rgba(298,20,20,0.7)'} />
+                    <Ionicons name={'ios-close-circle'} size={24} color={'rgba(298,20,20,0.7)'} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.detailBtn}>
-                    <Ionicons name={'ios-information-circle'} size={26} color={'rgba(0,0,0,0.7)'} />
+                    <Ionicons name={'ios-information-circle'} size={24} color={'rgba(0,0,0,0.7)'} />
                 </TouchableOpacity>
             </View>
         );
@@ -94,15 +94,15 @@ export default class ListCar extends Component {
         for (var i in state.tableData) {
             row = (
                 <TableWrapper key={i} style={styles.row}>
-                    <Cell data={state.tableData[i].Plate} textStyle={{ width: 85, color: 'red', fontSize: 13 }} />
-                    <Cell data={state.tableData[i].name} textStyle={{ width: 85, paddingLeft: 1 }} />
-                    <Cell data={state.tableData[i].color} textStyle={styles.text} />
-                    <Cell data={state.tableData[i].manaUsername} textStyle={styles.text} />
-                    <Cell data={listBtn} />
+                    <Cell data={state.tableData[i].Plate} style={{ width: ((WIDTH - 100) / 3) }} textStyle={{ textAlign: 'center' }} />
+                    <Cell data={state.tableData[i].name} style={{ width: ((WIDTH - 100) / 3) }} textStyle={{ textAlign: 'center' }} />
+                    <Cell data={state.tableData[i].color} style={{ width: ((WIDTH - 100) / 3) }} textStyle={{ textAlign: 'center' }} />
+                    <Cell data={state.tableData[i].manaUsername} style={{ width: 60 }} textStyle={{ textAlign: 'center' }} />
+                    <Cell data={listBtn} style={{ width: 40 }} />
                 </TableWrapper>);
             table.push(row);
         }
-
+        const widthArr = [(WIDTH - 100) / 3, (WIDTH - 100) / 3, (WIDTH - 100) / 3, 60, 40];
         return (
             <View style={styles.container}>
                 <SearchBar
@@ -111,7 +111,7 @@ export default class ListCar extends Component {
                     value={this.state.search}
                 />
                 <Table borderStyle={{ borderWidth: 1, borderColor: 'white' }} >
-                    <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
+                    <Row data={state.tableHead} style={styles.head} widthArr={widthArr} textStyle={styles.text} />
                     {table}
                 </Table>
                 <View style={styles.logoContainer}>

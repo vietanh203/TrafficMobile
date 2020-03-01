@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
-    StyleSheet, Text,
+    StyleSheet, Text, Dimensions,
     View, TouchableOpacity, Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { SearchBar } from 'react-native-elements';
+const { width: WIDTH } = Dimensions.get('window')
 
 export default class ListAccount extends Component {
     constructor(props) {
@@ -59,13 +60,13 @@ export default class ListAccount extends Component {
         const listBtn = (
             <View style={styles.btnContainer}>
                 <TouchableOpacity style={styles.deleteBtn}>
-                    <Ionicons name={'ios-close-circle'} size={26} color={'rgba(298,20,20,0.7)'} />
+                    <Ionicons name={'ios-close-circle'} size={20} color={'rgba(298,20,20,0.7)'} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.editBtn}>
-                    <Ionicons name={'ios-create'} size={26} color={'rgba(20,20,198,0.7)'} />
+                    <Ionicons name={'ios-create'} size={20} color={'rgba(20,20,198,0.7)'} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.lockBtn}>
-                    <Ionicons name={'ios-lock'} size={26} color={'rgba(0,0,0,0.7)'} />
+                    <Ionicons name={'ios-lock'} size={20} color={'rgba(0,0,0,0.7)'} />
                 </TouchableOpacity>
 
             </View>
@@ -74,14 +75,14 @@ export default class ListAccount extends Component {
         for (var i in state.tableData) {
             row = (
                 <TableWrapper key={i} style={styles.row}>
-                    <Cell data={state.tableData[i].name} textStyle={styles.text} />
-                    <Cell data={state.tableData[i].CMND} textStyle={styles.text} />
-                    <Cell data={state.tableData[i].SDT} textStyle={styles.text} />
-                    <Cell data={listBtn} />
+                    <Cell data={state.tableData[i].name} style={{ width: (WIDTH - 60) / 3 }} textStyle={{textAlign:'center'}}/>
+                    <Cell data={state.tableData[i].CMND} style={{ width: (WIDTH - 60) / 3 }} textStyle={{textAlign:'center'}}/>
+                    <Cell data={state.tableData[i].SDT} style={{ width: (WIDTH - 60) / 3 }} textStyle={{textAlign:'center'}}/>
+                    <Cell data={listBtn} style={{ width: 60}}/>
                 </TableWrapper>);
             table.push(row);
         }
-
+        const widthArr = [(WIDTH - 60) / 3, (WIDTH - 60) / 3, (WIDTH - 60) / 3, 60];
         return (
             <View style={styles.container}>
                 <SearchBar
@@ -90,7 +91,7 @@ export default class ListAccount extends Component {
                     value={this.state.search}
                 />
                 <Table borderStyle={{ borderWidth: 1, borderColor: 'white' }}>
-                    <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
+                    <Row data={state.tableHead} style={styles.head} widthArr={widthArr} textStyle={styles.text} />
                     {table}
                 </Table>
             </View>
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     container: { flex: 1, padding: 0, paddingTop: 40, backgroundColor: '#fff' },
     head: { height: 40, backgroundColor: '#808B97' },
     text: { margin: 4 },
-    row: { flexDirection: 'row', backgroundColor: '#FFF1C1' },
+    row: { flexDirection: 'row', backgroundColor: '#FFF1C1', height: 30 },
     btn: { width: 58, height: 18, backgroundColor: '#78B7BB', borderRadius: 2 },
     btnText: { textAlign: 'center', color: '#fff' },
     lockBtn: {

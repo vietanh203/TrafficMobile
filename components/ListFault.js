@@ -20,6 +20,7 @@ export default class ListFault extends Component {
             tableHead: ['Ngày', 'Giờ', 'Biển số', 'Chủ xe', ''],
             tableData: [],
             modalVisible: false,
+            chartData: {}
         }
     }
 
@@ -58,23 +59,32 @@ export default class ListFault extends Component {
     }
     updateSearch = search => {
         this.setState({ search });
-        const url = "http://apismarttraffic.servehttp.com/fails/" + search;
-        fetch(url, {
+        const searchData = [];
+        for (var i in this.state.tableData) {
+            if (this.state.tableData[i].Plate == search || this.state.tableData[i].user[0].username == search) {
+                searchData.push(this.state.tableData[i]);
+            }
+        }
+        this.setState({ tableData: searchData });
+    };
+    _alertIndex(index) {
+        Alert.alert(`This is row ${index + 1}`);
+    }
+    getCount = () => {
+        fetch("http://apismarttraffic.servehttp.com/fails/count", {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             }
-        }).then(response => response.json())
+        })
+            .then(response => response.json())
             .then((responseJson) => {
                 this.setState({
-                    tableData: responseJson.data
+                    chartData: responseJson
                 })
             })
             .catch(error => console.log(error))
-    };
-    _alertIndex(index) {
-        Alert.alert(`This is row ${index + 1}`);
     }
     componentDidMount() {
         fetch("http://apismarttraffic.servehttp.com/fails", {
@@ -90,13 +100,10 @@ export default class ListFault extends Component {
                     tableData: responseJson.data
                 })
             })
-            .catch(error => console.log(error)) //to catch the errors if any
+            .catch(error => console.log(error))
     }
-
-
     render() {
         const state = this.state;
-
         const data = [
             {
                 name: "Không đội mũ",
@@ -125,7 +132,7 @@ export default class ListFault extends Component {
                     <TouchableOpacity style={styles.detailBtn}
                         onPress={() => { this.toggleModal(!this.state.modalVisible) }}>
                         <View style={styles.btn}>
-                            <Text style={styles.btnText}>Chi tiết</Text>
+                            <Text style={styles.btnText}>Xem</Text>
                         </View>
                     </TouchableOpacity>
                     <View style={styles.popupContainer} >
@@ -155,14 +162,15 @@ export default class ListFault extends Component {
         for (var i in state.tableData) {
             row = (
                 <TableWrapper key={i} style={styles.row} >
-                    <Cell data={state.tableData[i].date} textStyle={{ width: 130, fontSize: 13 }} />
-                    <Cell data={state.tableData[i].time} textStyle={{ width: 65, paddingLeft: 4 }} />
-                    <Cell data={state.tableData[i].Plate} textStyle={{ color: 'red', width: 130, fontSize: 13 }} />
-                    <Cell data={state.tableData[i].user[0].username} textStyle={{ width: 45, paddingLeft: 8 }} />
-                    <Cell data={listBtn(state.tableData[i])} textStyle={{ width: 15 }} />
+                    <Cell data={state.tableData[i].date} style={{ width: ((WIDTH - 100) / 3) }} textStyle={{ textAlign: 'center' }} />
+                    <Cell data={state.tableData[i].time} style={{ width: ((WIDTH - 100) / 3) }} textStyle={{ textAlign: 'center' }} />
+                    <Cell data={state.tableData[i].Plate} style={{ width: ((WIDTH - 100) / 3) }} textStyle={{ textAlign: 'center', color: 'red' }} />
+                    <Cell data={state.tableData[i].user[0].username} style={{ width: 60 }} textStyle={{ textAlign: 'center' }} />
+                    <Cell data={listBtn(state.tableData[i])} style={{ width: 40 }} />
                 </TableWrapper>);
             table.push(row);
         }
+        const widthArr = [(WIDTH - 100) / 3, (WIDTH - 100) / 3, (WIDTH - 100) / 3, 60, 40];
 
         return (
             <View style={styles.container}>
@@ -172,10 +180,7 @@ export default class ListFault extends Component {
                     value={this.state.search}
                 />
                 <DatePicker
-                    style={{ width: WIDTH, height: 35 }}
-                    customStyles={{
-                        placeholderText: { fontSize: 20 }, // placeHolder style
-                    }} // optional 
+                    style={{ width: WIDTH, height: 35 }} // optional 
                     returnFormat={'YYYY/MM/DD'}
                     outFormat={'YYYY/MM/DD'}
                     ButtonText={'OK'}
@@ -186,9 +191,8 @@ export default class ListFault extends Component {
                     mode={'range'}
                     onConfirm={value => this.setDates(value)}
                 />
-                <Table borderStyle={{ borderWidth: 1, borderColor: 'white' }}
-                    widthArr={[130, 65, 130, 45, 15]}>
-                    <Row data={state.tableHead} style={styles.head} textStyle={styles.text} />
+                <Table borderStyle={{ borderWidth: 1, borderColor: 'white' }}>
+                    <Row data={state.tableHead} widthArr={widthArr} style={styles.head} textStyle={styles.text} />
                     {table}
                 </Table>
                 <Text style={{ textAlign: 'center', marginTop: 10 }}>THỐNG KÊ</Text>
@@ -226,7 +230,7 @@ const styles = StyleSheet.create({
     head: { height: 30, backgroundColor: '#808B97' },
     text: { margin: 0, textAlign: 'center' },
     row: { flexDirection: 'row', backgroundColor: '#FFF1C1', height: 30 },
-    btn: { marginTop: 4, width: 58, height: 18, backgroundColor: '#78B7BB', borderRadius: 2 },
+    btn: { alignItems: 'center', backgroundColor: '#78B7BB' },
     btnText: { textAlign: 'center', color: '#fff' },
     deleteBtn: { position: 'relative', top: 4 },
     detailBtn: { position: 'relative', top: 4 },
