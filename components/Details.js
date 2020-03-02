@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet, Text, Modal, TouchableHighlight,
     Image, View, TouchableOpacity, Alert, Dimensions
@@ -12,16 +12,7 @@ import { Button } from 'react-native-paper';
 const unixTS = require('unix-timestamp');
 const { width: WIDTH } = Dimensions.get('window')
 
-function getImage(obj) {
-    let unixStr = obj.date + " " + obj.time;
-    let unixTime = unixTS.fromDate(unixStr);
-    let url = `http://apismarttraffic.servehttp.com/img/${obj.Plate}_${unixTime}.jpg`;
-    console.log("abc");
-    return (<Image
-        style={{ width: '100%', height: 200, resizeMode: 'stretch' }}
-        source={{ uri: url }}
-    />)
-}
+
 getFaultByType = type => {
     switch (type) {
         case 0:
@@ -39,15 +30,20 @@ getFaultByType = type => {
     }
 }
 function Detail(props) {
-    let modalVisible = false;
-    const openModal = () => {
-        modalVisible = true;
-        console.log(modalVisible);
+    const [isOpen, setVisiable] = useState(false);
+    const getImage = obj => {
+        let unixStr = obj.date + " " + obj.time;
+        let unixTime = unixTS.fromDate(unixStr);
+        return (`http://apismarttraffic.servehttp.com/img/${obj.Plate}_${unixTime}.jpg`);
     }
+    useEffect(() => {
+        console.log(isOpen);
+    });
+    const imageUrl = getImage(props.obj);
     return (
         <View style={{ flex: 1, flexDirection: 'row' }}>
             <TouchableOpacity style={{ position: 'relative', top: 4 }}
-                onPress={openModal.bind(this)}>
+                onPress={() => { setVisiable(!isOpen) }}>
                 <View style={{ alignItems: 'center', backgroundColor: '#78B7BB' }}>
                     <Text style={{ textAlign: 'center', color: '#fff' }}>Xem</Text>
                 </View>
@@ -59,7 +55,7 @@ function Detail(props) {
                 margin: 20
             }} >
                 <Modal animationType={"slide"} transparent={false}
-                    visible={modalVisible}
+                    visible={isOpen}
                     onRequestClose={() => { modalVisible = false }}>
 
                     <View style={{
@@ -69,7 +65,10 @@ function Detail(props) {
                         justifyContent: 'center',
                         padding: 10
                     }}>
-                        <getImage obj={props.obj} />
+                        <Image
+                            style={{ width: '100%', height: 200, resizeMode: 'stretch' }}
+                            source={{ uri: imageUrl }}
+                        />
                         <Text style={{ textAlign: 'center' }}>Lỗi vị phạm : {getFaultByType(props.obj.type)}</Text>
                         <Text>Thời gian: {props.obj.date} - {props.obj.time}</Text>
                         <Text>Tên :{props.obj.user.length > 0 ? props.obj.user[0].name : ""}</Text>
@@ -81,7 +80,7 @@ function Detail(props) {
                             marginBottom: 10,
                             marginTop: 30
                         }}
-                            onPress={() => { modalVisible = false }}>
+                            onPress={() => { setVisiable(!isOpen) }}>
                             <Text style={{ textAlign: 'center', color: '#fff' }}>Đóng</Text>
                         </TouchableHighlight>
                     </View>
