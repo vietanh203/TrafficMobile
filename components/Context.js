@@ -9,6 +9,7 @@ class AppProvider extends React.Component {
     }
 
     onChange = (plate) => {
+        console.log('123', plate);
         this.setState({
             plate
         });

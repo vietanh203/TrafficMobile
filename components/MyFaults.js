@@ -75,9 +75,10 @@ class MyFaults extends Component {
             this.setState({ tableData: searchData });
         }
     };
-    componentDidMount() {
+    getFaults = () => {
         var data = [];
         const plates = this.props.plate;
+        console.log(plates);
         for (var i in plates) {
             fetch(`http://apismarttraffic.servehttp.com/fails/${plates[i]}`, {
                 method: 'GET',
@@ -89,16 +90,31 @@ class MyFaults extends Component {
                 .then(response => response.json())
                 .then((responseJson) => {
                     data = data.concat(responseJson.data);
+                    console.log(data);
                     this.setState({ tableData: data, isLoading: false });
                 })
                 .catch(error => console.log(error)) //to catch the errors if any
+        }
+
+    }
+    componentDidMount() {
+        const plates = this.props.plate;
+        if (plates.length > 0) {
+            this.getFaults();
+        }
+    }
+    componentDidUpdate(prevProps) {
+        const plates = this.props.plate;
+        if (plates.length > 0 && prevProps.plate.length == 0) {
+            this.getFaults();
         }
     }
 
     render() {
         const state = this.state;
         const isLoading = this.state.isLoading;
-        console.log(isLoading);
+        console.log(this.state.tableData);
+        // return null;
         const listBtn = (obj) =>
             (
                 <View style={styles.btnContainer}>

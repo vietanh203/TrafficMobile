@@ -46,8 +46,8 @@ class Login extends Component {
         }).then(response => response.json())
             .then((resJson) => {
                 if (resJson.success) {
-                    resJson.role == 0 ? this.navigate('Admin') : this.navigate('User');
                     this.props.onChange(resJson.plate);
+                    resJson.role == 0 ? this.navigate('Admin') : this.navigate('User');
                 } else {
                     alert('Vui lòng thử lại!');
                 }

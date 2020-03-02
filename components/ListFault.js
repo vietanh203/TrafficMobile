@@ -9,6 +9,10 @@ import { PieChart } from 'react-native-chart-kit';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { SearchBar } from 'react-native-elements';
 import { Button } from 'react-native-paper';
+import Detail from './Details';
+import FaultTable from './FaultTable';
+import { State } from 'react-native-gesture-handler';
+
 const unixTS = require('unix-timestamp');
 const { width: WIDTH } = Dimensions.get('window')
 
@@ -30,6 +34,8 @@ export default class ListFault extends Component {
     getImage = obj => {
         let unixStr = obj.date + " " + obj.time;
         let unixTime = unixTS.fromDate(unixStr);
+        console.log(`http://apismarttraffic.servehttp.com/img/${obj.Plate}_${unixTime}.jpg`)
+
         return (`http://apismarttraffic.servehttp.com/img/${obj.Plate}_${unixTime}.jpg`)
     }
     setDates = value => {
@@ -41,31 +47,19 @@ export default class ListFault extends Component {
         }
         this.setState({ tableData: dataFilter });
     };
-    getFaultByType = type => {
-        switch (type) {
-            case 0:
-                return ('Vượt đèn đỏ + Không nón bảo hiểm');
-                break;
-            case 1:
-                return ('Vượt đèn đỏ');
 
-                break;
-            case 2:
-                return ('Không nón bảo hiểm');
-                break;
-            default:
-                return '';
-        }
-    }
     updateSearch = search => {
         this.setState({ search });
         const searchData = [];
         for (var i in this.state.tableData) {
             if (this.state.tableData[i].Plate == search || this.state.tableData[i].user[0].username == search) {
                 searchData.push(this.state.tableData[i]);
+                console.log(searchData);
             }
         }
-        this.setState({ tableData: searchData });
+        if (searchData.length >= 1 && searchData != undefined) {
+            this.setState({ tableData: searchData });
+        }
     };
     _alertIndex(index) {
         Alert.alert(`This is row ${index + 1}`);
@@ -102,7 +96,9 @@ export default class ListFault extends Component {
             })
             .catch(error => console.log(error))
     }
+    count = 1;
     render() {
+        console.log(this.count++);
         const state = this.state;
         const data = [
             {
@@ -126,50 +122,7 @@ export default class ListFault extends Component {
                 legendFontColor: "#7F7F7F",
                 legendFontSize: 15
             }];
-        const listBtn = (obj) =>
-            (
-                <View style={styles.btnContainer}>
-                    <TouchableOpacity style={styles.detailBtn}
-                        onPress={() => { this.toggleModal(!this.state.modalVisible) }}>
-                        <View style={styles.btn}>
-                            <Text style={styles.btnText}>Xem</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <View style={styles.popupContainer} >
-                        <Modal animationType={"slide"} transparent={false}
-                            visible={this.state.modalVisible}
-                            onRequestClose={() => { console.log("Modal has been closed.") }}>
 
-                            <View style={styles.modal}>
-                                <Image
-                                    style={{ width: '100%', height: 200, resizeMode: 'stretch' }}
-                                    source={{ uri: this.getImage(obj) }}
-                                />
-                                <Text style={styles.text}>Lỗi vị phạm : {this.getFaultByType(obj.type)}</Text>
-                                <Text>Thời gian: {obj.date} - {obj.time}</Text>
-                                <Text>Tên :{obj.user[0].name}</Text>
-                                <Text>CMND:{obj.user[0].CMND}</Text>
-                                <TouchableHighlight style={styles.touchableButton}
-                                    onPress={() => { this.toggleModal(!this.state.modalVisible) }}>
-                                    <Text style={styles.btnText}>Đóng</Text>
-                                </TouchableHighlight>
-                            </View>
-                        </Modal>
-                    </View>
-                </View>
-            );
-        const table = [];
-        for (var i in state.tableData) {
-            row = (
-                <TableWrapper key={i} style={styles.row} >
-                    <Cell data={state.tableData[i].date} style={{ width: ((WIDTH - 100) / 3) }} textStyle={{ textAlign: 'center' }} />
-                    <Cell data={state.tableData[i].time} style={{ width: ((WIDTH - 100) / 3) }} textStyle={{ textAlign: 'center' }} />
-                    <Cell data={state.tableData[i].Plate} style={{ width: ((WIDTH - 100) / 3) }} textStyle={{ textAlign: 'center', color: 'red' }} />
-                    <Cell data={state.tableData[i].user[0].username} style={{ width: 60 }} textStyle={{ textAlign: 'center' }} />
-                    <Cell data={listBtn(state.tableData[i])} style={{ width: 40 }} />
-                </TableWrapper>);
-            table.push(row);
-        }
         const widthArr = [(WIDTH - 100) / 3, (WIDTH - 100) / 3, (WIDTH - 100) / 3, 60, 40];
 
         return (
@@ -193,7 +146,7 @@ export default class ListFault extends Component {
                 />
                 <Table borderStyle={{ borderWidth: 1, borderColor: 'white' }}>
                     <Row data={state.tableHead} widthArr={widthArr} style={styles.head} textStyle={styles.text} />
-                    {table}
+                    <FaultTable tableData={state.tableData} />
                 </Table>
                 <Text style={{ textAlign: 'center', marginTop: 10 }}>THỐNG KÊ</Text>
                 <PieChart
